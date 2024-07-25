@@ -4,8 +4,8 @@ import cors from 'cors'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 
-// import { authRoutes } from './api/auth/auth.routes.js'
-// import { userRoutes } from './api/user/user.routes.js'
+import { authRoutes } from './api/auth/auth.routes.js'
+import { userRoutes } from './api/user/user.routes.js'
 // import { reviewRoutes } from './api/review/review.routes.js'
 import { stayRoutes } from './api/stay/stay.routes.js'
 import { setupSocketAPI } from './services/socket.service.js'
@@ -34,9 +34,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 app.all('*', setupAsyncLocalStorage)
 
-// app.use('/api/auth', authRoutes)
-// app.use('/api/user', userRoutes)
+app.use('/api/auth', authRoutes)
 // app.use('/api/review', reviewRoutes)
+app.use('/api/user', userRoutes)
 app.use('/api/stay', stayRoutes)
 
 setupSocketAPI(server)

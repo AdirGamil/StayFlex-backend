@@ -5,6 +5,7 @@ export async function getStays(req, res) {
 	try {
 		const filterBy = {
 			txt: req.query.txt || '',
+			label: req.query.label || '',
 		}
 		const stays = await stayService.query(filterBy)
 		res.json(stays)
@@ -26,10 +27,9 @@ export async function getStayById(req, res) {
 }
 
 export async function addStay(req, res) {
-	const { loggedinUser, body: stay } = req
+	const { body: stay } = req
 
 	try {
-		stay.owner = loggedinUser
 		const addedStay = await stayService.add(stay)
 		res.json(addedStay)
 	} catch (err) {
@@ -39,13 +39,7 @@ export async function addStay(req, res) {
 }
 
 export async function updateStay(req, res) {
-	const { loggedinUser, body: stay } = req
-    const { _id: userId, isAdmin } = loggedinUser
-
-    if(!isAdmin && stay.owner._id !== userId) {
-        res.status(403).send('Not your stay...')
-        return
-    }
+	const { body: stay } = req
 
 	try {
 		const updatedStay = await stayService.update(stay)
@@ -60,7 +54,6 @@ export async function removeStay(req, res) {
 	try {
 		const stayId = req.params.id
 		const removedId = await stayService.remove(stayId)
-
 		res.send(removedId)
 	} catch (err) {
 		logger.error('Failed to remove stay', err)
@@ -69,14 +62,10 @@ export async function removeStay(req, res) {
 }
 
 export async function addStayMsg(req, res) {
-	const { loggedinUser } = req
+	const { body: msg } = req
 
 	try {
 		const stayId = req.params.id
-		const msg = {
-			txt: req.body.txt,
-			by: loggedinUser,
-		}
 		const savedMsg = await stayService.addStayMsg(stayId, msg)
 		res.json(savedMsg)
 	} catch (err) {
