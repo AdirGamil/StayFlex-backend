@@ -1,4 +1,4 @@
 export default {
-  dbURL: process.env.MONGO_URL || 'mongodb+srv://theUser:thePass@cluster0-klgzh.mongodb.net/test?retryWrites=true&w=majority',
-  dbName : process.env.DB_NAME || 'prod_db'
+  dbURL: process.env.MONGO_URL || 'mongodb+srv://adir:adir@stayflex.gzuhqtt.mongodb.net/?retryWrites=true&w=majority&appName=StayFlex',
+  dbName : process.env.DB_NAME || 'stayDB'
 }
