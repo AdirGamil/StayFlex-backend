@@ -1,8 +1,5 @@
-// order.service.js
-
 import { ObjectId } from 'mongodb'
 import { logger } from '../../services/logger.service.js'
-import { makeId } from '../../services/util.service.js'
 import { dbService } from '../../services/db.service.js'
 
 export const orderService = {
@@ -65,12 +62,8 @@ async function add(order) {
 
 async function update(order) {
   try {
-    console.log('Order received for update:', order) // Added log
-
     const criteria = { _id: new ObjectId(order._id) }
-    // Exclude the _id field from the update operation
     const { _id, ...orderData } = order
-
     const collection = await dbService.getCollection('order')
     const { modifiedCount } = await collection.updateOne(criteria, { $set: orderData })
     if (modifiedCount === 0) throw new Error('Order not found')
@@ -84,7 +77,6 @@ async function update(order) {
 async function addOrderMsg(orderId, msg) {
   try {
     const criteria = { _id: ObjectId.createFromHexString(orderId) }
-    msg.id = makeId()
     const collection = await dbService.getCollection('order')
     await collection.updateOne(criteria, { $push: { msgs: msg } })
     return msg

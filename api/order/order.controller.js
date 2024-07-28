@@ -44,7 +44,7 @@ export async function updateOrder(req, res) {
     res.json(updatedOrder)
   } catch (err) {
     logger.error('Failed to update order', err)
-    res.status(400).send({ err: 'Failed to update order', details: err.message })
+    res.status(400).send({ err: 'Failed to update order' })
   }
 }
 
