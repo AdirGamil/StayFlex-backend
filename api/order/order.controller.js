@@ -1,11 +1,15 @@
 import { logger } from '../../services/logger.service.js'
 import { orderService } from './order.service.js'
+import { socketService } from '../../services/socket.service.js'
+import { authService } from '../auth/auth.service.js'
+import { userService } from '../user/user.service.js'
+import { stayService } from '../stay/stay.service.js'
 
 export async function getOrders(req, res) {
   try {
     const filterBy = {
       txt: req.query.txt || '',
-      status: req.query.status || ''
+      status: req.query.status || '',
     }
     const orders = await orderService.query(filterBy)
     res.json(orders)
@@ -29,8 +33,24 @@ export async function getOrderById(req, res) {
 export async function addOrder(req, res) {
   const { body: order } = req
   try {
+    // נוודא שהמשתמש מאומת ונקבל את פרטי המשתמש המחובר
+    const loginToken = req.cookies.loginToken
+    const loggedinUser = authService.validateToken(loginToken)
+    if (!loggedinUser) throw new Error('User not authenticated')
+
     const addedOrder = await orderService.add(order)
-    res.json(addedOrder)
+
+    const ownerId = order.hostId._id // נוודא שאנו משתמשים ב-hostId מתוך ההזמנה
+
+
+    // שלח הודעה לבעל הנכס על הזמנה חדשה
+    socketService.emitToUser({
+      type: 'order-added',
+      data: addedOrder, // וודא שאנו שולחים את ההזמנה המתווספת
+      userId: ownerId,
+    })
+
+    res.send(addedOrder) // שלח את ההזמנה המתווספת ללקוח
   } catch (err) {
     logger.error('Failed to add order', err)
     res.status(400).send({ err: 'Failed to add order' })
