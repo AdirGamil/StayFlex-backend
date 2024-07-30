@@ -2,8 +2,6 @@ import { logger } from '../../services/logger.service.js'
 import { orderService } from './order.service.js'
 import { socketService } from '../../services/socket.service.js'
 import { authService } from '../auth/auth.service.js'
-import { userService } from '../user/user.service.js'
-import { stayService } from '../stay/stay.service.js'
 
 export async function getOrders(req, res) {
   try {
