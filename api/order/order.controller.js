@@ -57,11 +57,20 @@ export async function updateOrder(req, res) {
   try {
     const updatedOrder = await orderService.update(order)
     const ownerId = order.hostId._id
+    const guestId = order.guest._id
 
+    // Send update notification to the host
     socketService.emitToUser({
       type: 'order-updated',
       data: updatedOrder,
       userId: ownerId,
+    })
+
+    // Send update notification to the guest
+    socketService.emitToUser({
+      type: 'order-updated',
+      data: updatedOrder,
+      userId: guestId,
     })
 
     res.json(updatedOrder)
@@ -70,6 +79,7 @@ export async function updateOrder(req, res) {
     res.status(400).send({ err: 'Failed to update order' })
   }
 }
+
 
 export async function removeOrder(req, res) {
   try {
