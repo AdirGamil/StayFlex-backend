@@ -39,7 +39,6 @@ export async function addOrder(req, res) {
 
     const ownerId = order.hostId._id
 
-
     socketService.emitToUser({
       type: 'order-added',
       data: addedOrder,
@@ -54,21 +53,21 @@ export async function addOrder(req, res) {
 }
 
 export async function updateOrder(req, res) {
-  const { body: order } = req;
+  const { body: order } = req
   try {
-    const updatedOrder = await orderService.update(order);
-    const ownerId = order.hostId._id;
+    const updatedOrder = await orderService.update(order)
+    const ownerId = order.hostId._id
 
     socketService.emitToUser({
       type: 'order-updated',
       data: updatedOrder,
       userId: ownerId,
-    });
+    })
 
-    res.json(updatedOrder);
+    res.json(updatedOrder)
   } catch (err) {
-    logger.error('Failed to update order', err);
-    res.status(400).send({ err: 'Failed to update order' });
+    logger.error('Failed to update order', err)
+    res.status(400).send({ err: 'Failed to update order' })
   }
 }
 
