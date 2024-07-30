@@ -60,17 +60,19 @@ async function add(order) {
   }
 }
 
+
 async function update(order) {
   try {
-    const criteria = { _id: new ObjectId(order._id) }
-    const { _id, ...orderData } = order
-    const collection = await dbService.getCollection('order')
-    const { modifiedCount } = await collection.updateOne(criteria, { $set: orderData })
-    if (modifiedCount === 0) throw new Error('Order not found')
-    return order
+    const criteria = { _id: new ObjectId(order._id) };
+    const { _id, ...orderData } = order;
+    const collection = await dbService.getCollection('order');
+    const { modifiedCount } = await collection.updateOne(criteria, { $set: orderData });
+    if (modifiedCount === 0) throw new Error('Order not found');
+    const updatedOrder = await collection.findOne(criteria); // Fetch the updated order
+    return updatedOrder; // Return the updated order
   } catch (err) {
-    logger.error(`cannot update order ${order._id}`, err)
-    throw err
+    logger.error(`cannot update order ${order._id}`, err);
+    throw err;
   }
 }
 
