@@ -33,24 +33,22 @@ export async function getOrderById(req, res) {
 export async function addOrder(req, res) {
   const { body: order } = req
   try {
-    // נוודא שהמשתמש מאומת ונקבל את פרטי המשתמש המחובר
     const loginToken = req.cookies.loginToken
     const loggedinUser = authService.validateToken(loginToken)
     if (!loggedinUser) throw new Error('User not authenticated')
 
     const addedOrder = await orderService.add(order)
 
-    const ownerId = order.hostId._id // נוודא שאנו משתמשים ב-hostId מתוך ההזמנה
+    const ownerId = order.hostId._id
 
 
-    // שלח הודעה לבעל הנכס על הזמנה חדשה
     socketService.emitToUser({
       type: 'order-added',
-      data: addedOrder, // וודא שאנו שולחים את ההזמנה המתווספת
+      data: addedOrder,
       userId: ownerId,
     })
 
-    res.send(addedOrder) // שלח את ההזמנה המתווספת ללקוח
+    res.send(addedOrder)
   } catch (err) {
     logger.error('Failed to add order', err)
     res.status(400).send({ err: 'Failed to add order' })
