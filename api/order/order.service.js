@@ -69,8 +69,8 @@ async function update(order) {
       $set: orderData,
     })
     if (modifiedCount === 0) throw new Error('Order not found')
-    const updatedOrder = await collection.findOne(criteria) // Fetch the updated order
-    return updatedOrder // Return the updated order
+    const updatedOrder = await collection.findOne(criteria)
+    return updatedOrder 
   } catch (err) {
     logger.error(`cannot update order ${order._id}`, err)
     throw err
