@@ -60,14 +60,14 @@ export async function updateOrder(req, res) {
     const guestId = order.guest._id
 
     // Send update notification to the host
-    socketService.emitToUser({
+    socketService.emit({
       type: 'order-updated',
       data: updatedOrder,
       userId: ownerId,
     })
 
     // Send update notification to the guest
-    socketService.emitToUser({
+    socketService.emit({
       type: 'order-updated',
       data: updatedOrder,
       userId: guestId,
