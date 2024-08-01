@@ -18,21 +18,21 @@ export const stayService = {
 
 async function query(filterBy = { txt: '', label: '' }) {
   try {
-    const criteria = _buildCriteria(filterBy);
-    const sort = _buildSort(filterBy);
+      const criteria = _buildCriteria(filterBy);
+      const sort = _buildSort(filterBy);
 
-    const collection = await dbService.getCollection('stay');
-    let stayCursor = await collection.find(criteria, { sort });
+      const collection = await dbService.getCollection('stay');
+      let stayCursor = await collection.find(criteria, { sort });
 
-    if (filterBy.pageIdx !== undefined) {
-      stayCursor = stayCursor.skip(filterBy.pageIdx * PAGE_SIZE).limit(PAGE_SIZE);
-    }
+      if (filterBy.pageIdx !== undefined) {
+          stayCursor = stayCursor.skip(filterBy.pageIdx * PAGE_SIZE).limit(PAGE_SIZE);
+      }
 
-    const stays = await stayCursor.toArray();
-    return stays;
+      const stays = await stayCursor.toArray();
+      return stays;
   } catch (err) {
-    logger.error('cannot find stays', err);
-    throw err;
+      logger.error('cannot find stays', err);
+      throw err;
   }
 }
 
@@ -129,11 +129,11 @@ function _buildCriteria(filterBy) {
   const criteria = {};
 
   if (filterBy.txt) {
-    criteria.name = { $regex: filterBy.txt, $options: 'i' };
+      criteria['loc.country'] = { $regex: filterBy.txt, $options: 'i' };
   }
 
   if (filterBy.label) {
-    criteria.labels = filterBy.label;
+      criteria.labels = filterBy.label;
   }
 
   return criteria;
